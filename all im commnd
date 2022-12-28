@@ -3,3 +3,8 @@ pm2 serve build/ 3000 --name "front-app" --spa
 
 // for run node js app   go inside app then run this command 
 pm2 start 
+
+
+///mongo Command 
+
+ssh -i node-ssh.pem ubuntu@34.199.164.237 -L 27002:127.0.0.1:27017

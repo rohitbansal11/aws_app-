@@ -1,0 +1,178 @@
+https://blog.devgenius.io/upload-files-to-amazon-s3-from-a-react-frontend-fbd8f0b26f5
+
+
+
+Upload files to Amazon S3 from a React Frontend
+Through this blog, I will cover how to upload files to Amazon S3 from a React Application. I referred to a lot of resources, this is a compilation of my understanding and the steps that worked out for me.
+
+This is the link to my GitHub repository, you can simply clone it and follow along.
+
+
+Image source: https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.freecodecamp.org%2Fnews%2Feverything-you-need-to-know-about-aws-s3%2F&psig=AOvVaw1yKV5cmsqJFNc9a6lWgn75&ust=1648911265693000&source=images&cd=vfe&ved=0CAsQjRxqFwoTCKDb26OP8_YCFQAAAAAdAAAAABAN
+Bucket setup and configuration
+Going over a few pre-requisites:
+
+It is required to have an account on AWS. A few basic details, along with credit card information are asked. (This is for security and verification purposes only)
+Services mentioned under the free-tier tag can be used, and you will NOT be charged
+As stated by Wikipedia, Amazon S3 or Amazon Simple Storage Service is a service offered by Amazon Web Services that provides object storage through a web service interface. Amazon S3 uses the same scalable storage infrastructure that Amazon.com uses to run its global e-commerce network
+The AWS documentation is super simple and highly recommended :https://docs.aws.amazon.com/AmazonS3/latest/userguide/UsingBucket.html
+
+On successful login, you should be directed to the dashboard page
+Explore a little here, AWS offers a variety of cloud-related services and is extremely easy to use and build applications without having to worry about resources and scalability.
+
+Once, the account setup is done, and you are ready, it is time to create a new bucket (as it is called or a storage instance)
+
+
+Search for the S3 service and click on it
+When the S3 service is chosen, it opens into a page listing all of the storage buckets that are created by you. If it’s the first time, you should obviously not find any buckets created.
+
+
+This page lists the buckets created by you
+On clicking the Create bucket, you will be redirected to a configuration page. This is the most important part, so follow carefully.
+
+Disclaimer:
+For a development setup, all the configuration options I have chosen can be chosen, for a production setup might be slightly different.
+
+Step 1
+
+
+First configuration
+Set a suitable name for your bucket, the name of a bucket is in a sense the primary key or a unique identifier maintained by AWS to distinguish between buckets, so pick a name that has never been chosen before.
+
+Step 2
+
+
+Second configuration
+By default, Object Ownership is set to ACLs disabled, this can lead to problems, thus, the ACLs enabled option should be chosen.
+
+As stated in the Amazon documentation: Amazon S3 access control lists (ACLs) enable you to manage access to buckets and objects. Each bucket and object has an ACL attached to it as a subresource. It defines which AWS accounts or groups are granted access and the type of access.
+
+On choosing the ACL enabled option, this is what it looks like
+
+
+Step 3
+
+
+Third configuration
+By default, public access to the bucket and its objects are NOT ALLOWED, but this wouldn't be the case, as our application may involve users uploading files/folders which has to be stored on S3.
+
+On unchecking the Block All public access, this option has to be enabled, of course, it is risky, allowing public access to the contents of your bucket, but again remember this is only for a development setup!
+
+
+Acknowledge the risks!
+The other options can be left as is, and you can go ahead and create your bucket
+
+
+One step closer to setting up your bucket
+Once your bucket is created, you are taken to the dashboard page, and your newly created bucket is shown here. (I’ve just created a dummy bucket for the demo, will be deleted soon after )
+
+
+Click on the name of your bucket, you will be taken to the bucket dashboard
+
+
+Tadaaa, this is where your uploads will reside
+Once, the bucket is created, you will need to change the Permissions, click on the Permissions tab and
+
+
+permissions Tab
+CORS
+
+Cross-origin-resource sharing should be enabled, i.e your files stored on AWS requested from other servers or hosts should be retrievable, hence we make edit the CORS policy. At the end of the Permissions tab, you will find an option to edit the CORS policy
+
+
+Edit the CORS policy
+[
+    {
+        "AllowedHeaders": [
+            "*"
+        ],
+        "AllowedMethods": [
+            "PUT",
+            "POST",
+            "DELETE",
+            "GET",
+            "HEAD"
+        ],
+        "AllowedOrigins": [
+            "*"
+        ],
+        "ExposeHeaders": [
+            "x-amz-server-side-encryption",
+            "x-amz-request-id",
+            "x-amz-id-2"
+        ],
+        "MaxAgeSeconds": 3000
+    }
+]
+Paste this as the CORS policy, this means requests coming from “*” or any domain will be serviced, to allow requests to be serviced from a particular domain(s), it can be updated suitably.
+
+Access Control List (ACL)
+
+
+Who has permission to do what
+Click on edit, and set Read for Everyone, indicating that all should have access to read the content of the buckets, but only you will have access to write to the bucket, remember to Save Changes, at the end of the page
+
+
+Allow everyone to read
+Bucket policy
+
+
+Edit the bucket policy
+{
+    "Version": "2012-10-17",
+    "Id": "Policy1648807206642",
+    "Statement": [
+        {
+            "Sid": "Stmt1648807205338",
+            "Effect": "Allow",
+            "Principal": "*",
+            "Action": "s3:*",
+            "Resource": [
+                "arn:aws:s3:::your-bucket-name",
+                "arn:aws:s3:::your-bucket-name/*"
+            ]
+        }
+    ]
+}
+Enter this as the bucket policy, after this, the configuration for the bucket is ready.
+
+Step 4
+
+Once this setup is complete, you will need some information about your account and bucket, this is used in the frontend .
+
+Access Key
+Secret Key
+Bucket Name
+Bucket Location
+3 & 4 can be obtained from the bucket dashboard
+
+To get the values of 1 & 2, click on the name of your account in the top right corner
+
+
+A drop down with the following options opens, click on Security Credentials
+
+
+Click on Access Keys, and generate a Create a New Access Key. A CSV file containing the access key and secret key will be generated
+
+This is confidential, hence keep it safe
+
+
+Create a new access key pair, and store it carefully
+Frontend
+A simple frontend in React has been used here, clone the repository https://github.com/Namyalg/Upload-to-S3-from-React, and follow the instructions in the README file. The npm package react-aws-s3 , has been used to abstract the procedure of uploading files to the bucket.
+
+npm package used: https://www.npmjs.com/package/react-aws-s3
+
+Once the frontend is set up, in the buckets dashboard, you should find the uploaded files in the Objects tab
+
+
+Uploaded files
+To view the file uploaded, you can visit this URL
+
+https://your-bucket-name.s3-us-west-2.amazonaws.com/name-of-file
+
+Eg: If the name of your bucket is gittestdemo, and the name of the file uploaded is sample.png, this uploaded image will be visible at
+
+https://gittestdemo.s3-us-west-2.amazonaws.com/sample.png
+
+These are all the steps you can follow to upload files to your S3 bucket!

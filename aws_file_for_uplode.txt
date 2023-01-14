@@ -1,5 +1,8 @@
 Create Ec2 Instance
 
+usre Yum in linux 
+
+
 Connect with SSH terminal
 
 Login as a root user - sudo su

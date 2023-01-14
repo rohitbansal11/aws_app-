@@ -2,7 +2,7 @@
 pm2 serve build/ 3000 --name "front-app" --spa
 
 // for run node js app   go inside app then run this command 
-pm2 start 
+pm2 start index.js --name api
 
 
 ///mongo Command 

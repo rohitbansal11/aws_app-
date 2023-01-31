@@ -8,3 +8,9 @@ pm2 start index.js --name api
 ///mongo Command 
 
 ssh -i node-ssh.pem ubuntu@34.199.164.237 -L 27002:127.0.0.1:27017
+
+
+////next js 
+cd my-app
+npm run build
+pm2 start npm --name "next" -- start

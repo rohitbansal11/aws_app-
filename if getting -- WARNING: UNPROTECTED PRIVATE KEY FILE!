@@ -1,0 +1,17 @@
+To fix this,
+
+you’ll need to reset the permissions back to default:
+
+sudo chmod 600 ~/.ssh/id_rsa
+sudo chmod 600 ~/.ssh/id_rsa.pub
+If you are getting another error:
+
+Are you sure you want to continue connecting (yes/no)? yes
+Failed to add the host to the list of known hosts (/home/geek/.ssh/known_hosts).
+This means that the permissions on that file are also set incorrectly, and can be adjusted with this:
+
+sudo chmod 644 ~/.ssh/known_hosts
+Finally, you may need to adjust the directory permissions as well:
+
+sudo chmod 755 ~/.ssh
+This should get you back up and running.
